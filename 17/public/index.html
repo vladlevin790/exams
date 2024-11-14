@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSRF Protection Test</title>
+</head>
+<body>
+    <h1>SSRF Protection Test</h1>
+    <form id="urlForm">
+        <label for="url">Enter URL:</label>
+        <input type="text" id="url" name="url" required>
+        <button type="submit">Fetch URL</button>
+    </form>
+    <div id="response"></div>
+
+    <script>
+        document.getElementById('urlForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = document.getElementById('url').value;
+            const responseDiv = document.getElementById('response');
+            
+            try {
+                const response = await fetch('/fetch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ url })
+                });
+                
+                const data = await response.text();
+                responseDiv.innerHTML = `<pre>${data}</pre>`;
+            } catch (error) {
+                responseDiv.innerText = 'Error fetching URL';
+            }
+        });
+    </script>
+</body>
+</html>

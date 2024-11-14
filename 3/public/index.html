@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест сессий</title>
+    <script>
+        let inactivityTimeout;
+        const maxInactivityTime = 15 * 1000;
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimeout);
+            inactivityTimeout = setTimeout(logoutUser, maxInactivityTime);
+            updateSessionStatus("Ваша сессия активна.");
+        }
+
+        function logoutUser() {
+            alert("Вы были автоматически выведены из системы из-за бездействия.");
+            window.location.href = "/logout";
+        }
+
+        function updateSessionStatus(message) {
+            document.getElementById("status").innerHTML = message;
+        }
+
+        function checkSessionStatus() {
+            fetch("/dashboard")
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("status").innerHTML = data;
+                })
+                .catch(error => {
+                    document.getElementById("status").innerHTML = "Ошибка соединения с сервером.";
+                });
+        }
+
+        function logout() {
+            window.location.href = "/logout";
+        }
+
+        document.addEventListener('mousemove', resetInactivityTimer);
+        document.addEventListener('keydown', resetInactivityTimer);
+        document.addEventListener('click', resetInactivityTimer);
+
+        resetInactivityTimer();
+    </script>
+</head>
+<body>
+    <h1>Тест сессий</h1>
+    <p>Этот интерфейс используется для проверки автоматического завершения сессии через 15 секунд бездействия.</p>
+
+    <div id="status">
+        <p>Сессия активна.</p>
+    </div>
+
+    <button onclick="checkSessionStatus()">Проверить статус сессии</button>
+    <button onclick="logout()">Выйти из системы</button>
+    
+</body>
+</html>

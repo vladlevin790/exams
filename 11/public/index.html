@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Session Management</title>
+    </head>
+    <body>
+        <h1>Session Management</h1>
+        <button onclick="startSession()">Начать сессию</button>
+        <button onclick="checkSession()">Проверить сессию</button>
+        <p id="session-status"></p>
+
+        <script>
+            async function startSession() {
+                const response = await fetch("/start-session");
+                const text = await response.text();
+                document.getElementById("session-status").textContent = text;
+            }
+
+            async function checkSession() {
+                console.log("Check session");
+                const response = await fetch("/check-session");
+                const text = await response.text();
+                document.getElementById("session-status").textContent = text;
+            }
+
+            setInterval(checkSession, 15 * 1000);
+        </script>
+    </body>
+</html>
